@@ -1,0 +1,30 @@
+Step 1: Tune Latency (The Close-Up Test)
+System latency is a flat delay (e.g., how long the CAN bus and indexer take to physically push the ball). It never changes, regardless of where you are on the field. Because the ball travels almost instantly when you are right next to the Hub, we can safely ignore the Time of Flight math for a moment to isolate latency.
+
+The Setup: Place the robot about 1.5 meters from the Hub.
+
+The Test: Drive the robot horizontally (strafing parallel to the driver station wall) at a medium, consistent speed while holding the Left Trigger.
+
+The Observation: Watch where the ball hits relative to your direction of travel.
+
+If the ball misses behind the target (trailing your movement): Your robot didn't lead the shot enough. Increase the SystemLatency number (e.g., from 0.15 to 0.20) to tell the robot it takes longer to fire.
+
+If the ball misses ahead of the target (leading too much): Decrease the SystemLatency.
+
+Repeat this until the ball sinks perfectly dead-center while strafing back and forth up close. Once it drops, do not touch the latency number again.
+
+Step 2: Tune Ball Velocity (The Far-Away Test)
+Now that you know your physical mechanism's delay is perfectly calibrated, the only remaining variable is how long the ball spends in the air. Time of Flight heavily impacts long shots.
+
+The Setup: Back the robot up to about 4 or 5 meters away from the Hub.
+
+The Test: Drive horizontally across the field again at a consistent speed, holding the Left Trigger.
+
+The Observation: * If the ball misses behind the target: The robot isn't leading enough because the ball is taking longer to get there than the math thinks. You need to Decrease the BallVelocityMPS (e.g., from 12.0 to 10.0). A slower ball means a longer flight time, which forces the robot to aim further ahead.
+
+If the ball misses ahead of the target: The ball is flying faster than the math thinks. Increase the BallVelocityMPS.
+
+The Final "Real World" Check
+Once you have the close shot and the far shot dialed in, have your driver zip around in random diagonals while the mechanism operator holds the trigger.
+
+You might notice that the physical density variations of the fuel balls cause some slight left/right spread on the longest shots, but thanks to the SweetSpotOffset pulling your aim closer to the front lip, those slight horizontal variations usually still funnel right in.
