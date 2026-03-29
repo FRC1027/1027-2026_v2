@@ -1,8 +1,8 @@
-package frc.robot.commands;
+package frc.robot.commands.swervedrive;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * Command that locks the swerve modules in place to resist robot movement.

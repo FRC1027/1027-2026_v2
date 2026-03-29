@@ -6,11 +6,11 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.util.Constants.ObjectRecognitionConstants;
-import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.LimelightResults;
-import frc.robot.util.Utils;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.utilities.LimelightHelpers;
+import frc.robot.utilities.Utils;
+import frc.robot.utilities.Constants.ObjectRecognitionConstants;
+import frc.robot.utilities.LimelightHelpers.LimelightResults;
 
 /**
  * A command that detects either an AprilTag or a game piece and then either aligns to the target

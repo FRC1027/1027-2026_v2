@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.utilities;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 

@@ -1,10 +1,9 @@
-package frc.robot.util;
+package frc.robot.utilities;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Timer;
-
-import frc.robot.util.Constants.ObjectRecognitionConstants;
-import frc.robot.util.Constants.RobotProperties;
+import frc.robot.utilities.Constants.ObjectRecognitionConstants;
+import frc.robot.utilities.Constants.RobotProperties;
 
 /**
  * Shared utility methods used across robot subsystems and commands.
