@@ -57,6 +57,8 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -87,6 +89,7 @@ public class SwerveSubsystem extends SubsystemBase
                                                                              Rotation2d.fromDegrees(0)));
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+      configurePigeon2();
     } catch (Exception e)
     {
       throw new RuntimeException(e);
@@ -120,6 +123,7 @@ public class SwerveSubsystem extends SubsystemBase
                                   RobotProperties.MAX_SPEED,
                                   new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
                                              Rotation2d.fromDegrees(0)));
+    configurePigeon2();
   }
 
   public void updateVisionOdometry() {
@@ -132,6 +136,33 @@ public class SwerveSubsystem extends SubsystemBase
       }
     } catch (Exception e) {
       //System.out.println(e);
+    }
+  }
+
+  /**
+   * Configures the Pigeon 2 Mount Pose for a vertical mount.
+   */
+  private void configurePigeon2()
+  {
+    // Safety check to ensure the IMU is actually a Pigeon 2 before casting
+    Object imuObject = swerveDrive.swerveDriveConfiguration.imu.getIMU();
+    if (imuObject instanceof Pigeon2) 
+    {
+      try (Pigeon2 pigeon = (Pigeon2) imuObject) {
+        Pigeon2Configuration config = new Pigeon2Configuration();
+        pigeon.getConfigurator().refresh(config);
+
+        // Adjust these depending on the exact vertical face it's mounted on!
+        config.MountPose.MountPosePitch = 0; // Or -90
+        config.MountPose.MountPoseRoll = 0;   // Or 90 / -90
+        config.MountPose.MountPoseYaw = 0;    // Adjust so forward reads 0
+
+        pigeon.getConfigurator().apply(config);
+      }
+    } 
+    else 
+    {
+      DriverStation.reportWarning("Tried to configure Pigeon 2 Mount Pose, but the IMU in YAGSL is not a Pigeon 2!", false);
     }
   }
 
