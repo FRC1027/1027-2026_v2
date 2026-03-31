@@ -9,7 +9,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.Constants.IntakeConstants;
+
+import frc.robot.util.Constants.IntakeConstants;
 
 /**
  * Subsystem that controls the intake motor used to collect game pieces off the floor.
