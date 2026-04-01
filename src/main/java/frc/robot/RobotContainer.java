@@ -27,6 +27,7 @@ import frc.robot.commands.auto.AutoShootAtTag4;
 import frc.robot.commands.AimAtHubCommand;
 import frc.robot.commands.DriveTowardTargetCommand;
 import frc.robot.commands.LockWheelsCommand;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -52,6 +53,9 @@ public class RobotContainer {
       new File(Filesystem.getDeployDirectory(), "swerve")
   );
 
+  // Declaring the HopperSubsystem
+  private final HopperSubsystem m_hopper;
+
   // Declaring the IntakeSubsystem
   private final IntakeSubsystem m_intake;
 
@@ -60,15 +64,6 @@ public class RobotContainer {
 
   // Declaring the ShooterSubsystem
   private final ShooterSubsystem m_shooter;
-
-  // Declaring DriveTowardTagCommand (Drive Mode) ** Uses AprilTag detection **
-  private final DriveTowardTargetCommand m_DriveTowardTagCommand;
-
-  // Declaring DriveTowardGamePieceCommand (Drive Mode) ** Uses object detection **
-  private final DriveTowardTargetCommand m_DriveTowardGamePieceCommand;
-
-  // Declaring AlignTagCommand (Align Only Mode - MaxSpeed = 0) ** Only uses AprilTag detection, not object detection **
-  private final DriveTowardTargetCommand m_AlignTagCommand;
 
   // Constructs a SendableChooser for autonomous command selection on the dashboard, allowing for dynamic selection of autonomous routines.
   private final SendableChooser<Command> m_chooser;
@@ -120,26 +115,20 @@ public class RobotContainer {
     // Silence the joystick connection warning that can appear on the dashboard when using certain controllers
     DriverStation.silenceJoystickConnectionWarning(true);
 
+    // Initialize the HopperSubsystem
+    m_hopper = new HopperSubsystem();
+
     // Initialize the IntakeSubsystem
-    m_intake = new IntakeSubsystem();
+    m_intake = new IntakeSubsystem(m_hopper::getHopperEnlarged);
 
     // Initialize the IndexerSubsystem
     m_indexer = new IndexerSubsystem();
 
     // Initialize the ShooterSubsystem
-    m_shooter = new ShooterSubsystem(m_indexer);
+    m_shooter = new ShooterSubsystem(m_indexer, m_hopper);
 
     // Bind the drivebase to the shooter for the new Odometry testing
     m_shooter.setDrivebase(drivebase);
-
-    // Initialize the DriveTowardTagCommand (Drive Mode) ** Uses AprilTag detection **
-    m_DriveTowardTagCommand = new DriveTowardTargetCommand(drivebase, true);
-
-    // Initialize the DriveTowardGamePieceCommand (Drive Mode) ** Uses object detection **
-    m_DriveTowardGamePieceCommand = new DriveTowardTargetCommand(drivebase, false);
-
-    // Initialize the AlignTagCommand (Align Only Mode - MaxSpeed = 0) ** Only uses AprilTag detection, not object detection **
-    m_AlignTagCommand = new DriveTowardTargetCommand(drivebase, 0.0, 2.0);
 
     /**
      * Register NamedCommands for use in PathPlanner autonomous paths here. This allows the commands to be
@@ -148,7 +137,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot", m_shooter.shoot()); // Adds the shoot command as a named command for use in PathPlanner paths
     NamedCommands.registerCommand("ShootAlign", m_shooter.shootAlign(drivebase)); // Adds the shootAlign command as a named command for use in PathPlanner paths
     NamedCommands.registerCommand("Intake", m_intake.continuousIntakeCommand()); // Adds the intake command as a named command, for use in PathPlanner paths
-    NamedCommands.registerCommand("DriveToGamePiece", m_DriveTowardGamePieceCommand); // Adds the driveTowardGamePieceCommand as a named command for use in PathPlanner paths
+    NamedCommands.registerCommand("HopperExpand/Retract", m_hopper.hopperEnlarger2000Command()); // Adds the hopperEnlarger2000Command as a named command for use in PathPlanner paths
 
     // Initialize the SendableChooser that adds all of the PathPlanner Autos to the dashboard
     m_chooser = AutoBuilder.buildAutoChooser();
@@ -188,6 +177,13 @@ public class RobotContainer {
 
     /* ================= Mechanism Control Bindings ================= */
 
+    // Controls the hopper with the mechXbox bumpers (WILL NOT BE USED IN COMPITITION)
+    mechXbox.rightBumper().whileTrue(m_hopper.manualHopperControl());
+    mechXbox.leftBumper().whileTrue(m_hopper.manualHopperControl());
+
+    // Controls the enlargment/retraction of the hopper with the `y` button (TOGGLEABLE).
+    mechXbox.y().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
+
     // Controls the intake to run continuously via the `x` button (TOGGLEABLE).
     mechXbox.x().toggleOnTrue(m_intake.continuousIntakeCommand());
 
@@ -198,7 +194,7 @@ public class RobotContainer {
     mechXbox.a().toggleOnTrue(m_shooter.shoot());
 
     // TEST BINDING: Controls the shooter to run at full speed with the `y` button (TOGGLEABLE).
-    mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
+    //mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
 
     /* ================= Driver Control Bindings ================= */
 

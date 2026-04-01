@@ -3,6 +3,7 @@ package frc.robot.util;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Timer;
 
+import frc.robot.util.Constants.HopperConstants;
 import frc.robot.util.Constants.ObjectRecognitionConstants;
 import frc.robot.util.Constants.RobotProperties;
 
@@ -44,7 +45,7 @@ public final class Utils {
    * @param limelight a Limelight object reference that can be used to retrieve pose information.
    * @return Distance from bumper to target tag in meters, or NaN if the Limelight pose is unavailable.
    */
-  public static double calculateDistanceToTarget(NetworkTable limelight) {
+  public static double calculateDistanceToTarget(NetworkTable limelight, boolean isHopperExtended) {
     // Read the target pose in the camera coordinate frame (x = left/right, y = up/down, z = forward).
     double[] pose = limelight.getEntry("targetpose_cameraspace").getDoubleArray(new double[0]);
 
@@ -66,6 +67,11 @@ public final class Utils {
 
       // Convert from camera distance to shooter distance
       double shooterToTag = Math.max(0.0, (cameraToTag + RobotProperties.CAM_TO_SHOOTER_DISTANCE));
+
+      // If the hopper is extended, add the extension length to the distance.
+      if (isHopperExtended) {
+        cameraToTag += HopperConstants.HOPPER_EXTENTION_LENGTH;
+      }
 
       // Print statement for debugging: should print true repeatedly if Limelight flicker mitigation works correctly.
       System.out.println("TV: " + hasTarget + " Distance: " + shooterToTag);

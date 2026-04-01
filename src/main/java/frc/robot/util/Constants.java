@@ -96,6 +96,21 @@ public final class Constants {
     public static final double HEIGHT_DIFFERENCE = GOAL_HEIGHT - SHOOTER_HEIGHT;
   }
 
+  /* ================= Hopper ================= */
+
+  public static final class HopperConstants {
+    private HopperConstants() {} // Prevent instantiation
+
+    /** CAN ID for the primary hopper motor. */
+    public static final int HOPPER_MOTOR_ID1 = 51;
+
+    /** CAN ID for the follower hopper motor. */
+    public static final int HOPPER_MOTOR_ID2 = 52;
+
+    /** Hopper extension length in meters. */
+    public static final double HOPPER_EXTENTION_LENGTH = Units.inchesToMeters(12); // MEASURE THIS
+  }
+
   /* ================= Intake ================= */
 
   public static final class IntakeConstants {

@@ -42,6 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
     // Reference to the IndexerSubsystem to run the indexer command in parallel with shooting.
     private final IndexerSubsystem m_indexer;
 
+    // Reference to the HopperSubsystem to check hopper extension state for distance calculations.
+    private final HopperSubsystem m_hopper;
+
     // Primary shooter motor controller (leader).
     private final TalonFX shooterMotor1;
 
@@ -61,10 +64,14 @@ public class ShooterSubsystem extends SubsystemBase {
      * follower behavior and dashboard tuning entries.
      * 
      * @param m_indexer a reference to the IndexerSubsystem for use in parallel control of the subsystems.
-     */
-    public ShooterSubsystem(IndexerSubsystem m_indexer) {
+     * @param m_hopper a reference to the HopperSubsystem for use in distance calculations from the moveable Limelight.
+     */
+    public ShooterSubsystem(IndexerSubsystem m_indexer, HopperSubsystem m_hopper) {
         // Store the reference to the IndexerSubsystem for use in shooting commands.
         this.m_indexer = m_indexer;
+
+        // Store the reference to the HopperSubsystem for use in distance calculations that account for hopper extension.
+        this.m_hopper = m_hopper;
 
         // Initialize the shooter motors using configured CAN IDs.
         shooterMotor1 = new TalonFX(ShooterConstants.SHOOTER_MOTOR_ID1);
@@ -207,7 +214,7 @@ public class ShooterSubsystem extends SubsystemBase {
             double fid = LimelightHelpers.getFiducialID(ObjectRecognitionConstants.LIMELIGHT_NAME);
 
             if (fid == 4 || fid == 10 || fid == 26) {
-                return new DriveTowardTargetCommand(drivebase, 0.0, 2.0) // Aligns to the target tag using only rotational movement (max speed = 0)
+                return new DriveTowardTargetCommand(drivebase, 0.0, 2.0, m_hopper) // Aligns to the target tag using only rotational movement (max speed = 0)
                         // Once the alignment command finishes, run the shoot command while also locking the wheels to prevent movement during shooting.
                         .andThen(Commands.deadline(
                                 shoot(), // End the command when the shoot command finishes (which is when the driver releases the trigger)
@@ -294,7 +301,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double getDistance() {
         // Calculate the distance from the shooter to the target tag using Limelight data.
-        return Utils.calculateDistanceToTarget(limelight);
+        return Utils.calculateDistanceToTarget(limelight, m_hopper.getHopperEnlarged());
     }
 
     // ========================================================================

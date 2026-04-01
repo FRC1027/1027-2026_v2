@@ -12,10 +12,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.util.Constants.IntakeConstants;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * Subsystem that controls the intake motor used to collect game pieces off the floor.
  */
 public class IntakeSubsystem extends SubsystemBase {
+    // Boolean supplier to check if the hopper is enlarged, allowing for coordinated control between subsystems.
+    private final BooleanSupplier isHopperEnlarged;
+
     // Intake motor.
     private final SparkMax intakeMotor;
 
@@ -30,9 +35,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     /**
      * Constructor for the IntakeSubsystem. Initializes the intake motor and applies the configuration.
+     * 
+     * @param isHopperEnlarged supplier that reports whether hopper expansion allows intake operation,
+     * enabling coordinated control between the intake and hopper subsystems.
      */
     @SuppressWarnings("removal") // Suppress warnings about deprecated ResetMode and PersistMode usage in SparkMax configuration.
-    public IntakeSubsystem() {
+    public IntakeSubsystem(BooleanSupplier isHopperEnlarged) {
+        // Store the BooleanSupplier for checking hopper state, enabling dynamic response to hopper enlargement.
+        this.isHopperEnlarged = isHopperEnlarged;
+
         // Initialize the intake motor using configured CAN ID.
         intakeMotor = new SparkMax(IntakeConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
 
@@ -46,11 +57,11 @@ public class IntakeSubsystem extends SubsystemBase {
      * 
      * @return a command that runs the intake at a set speed and stops on interruption.
      */
-    public Command continuousIntakeCommand() { //
+    public Command continuousIntakeCommand() {
         return runEnd(
             () -> setIntakeSpeed(-0.9), // Run intake at a set speed.
             () -> setIntakeSpeed(0.0) // Stop intake when command is interupted.
-        );
+        ).onlyWhile(isHopperEnlarged); // If the hopper begins to close while the intake is running, the intake command stops.
     }
 
     /**
