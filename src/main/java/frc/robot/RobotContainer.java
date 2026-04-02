@@ -205,9 +205,7 @@ public class RobotContainer {
     //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
 
     //driverXbox.a().toggleOnTrue(driveRobotOrientedCommand);
-
-    driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyroWithAlliance, drivebase));
-
+    //driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyroWithAlliance, drivebase));
 
     // TEST BINDING: Run the NEW Odometry-based distance calculation for shooting with the Right/Left Trigger
     // STATIC TEST: Right Trigger (Passes false moving)
