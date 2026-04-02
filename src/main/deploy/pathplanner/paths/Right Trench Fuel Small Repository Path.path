@@ -3,40 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.54922891566265,
-        "y": 2.6253253012048186
+        "x": 3.5055180722891564,
+        "y": 0.7785421686746998
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.302288174330383,
-        "y": 2.6643159445730715
+        "x": 2.478313253012048,
+        "y": 1.5653373493975913
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2762650602409638,
-        "y": 5.9473493975903615
+        "x": 1.680590361445783,
+        "y": 5.958277108433736
       },
       "prevControl": {
-        "x": 1.5262650602409638,
-        "y": 5.9473493975903615
+        "x": 1.7461566265060244,
+        "y": 5.6523012048192784
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 88.6022125075023
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "HopperExpand/Retract",
+      "waypointRelativePos": 0.5985111662531046,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -47,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 179.5787150958314
   },
   "reversed": false,
   "folder": "Collect Fuel Paths",

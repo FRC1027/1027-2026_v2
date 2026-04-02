@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Collect Fuel Large Repository Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DO NOT USE (Large Right)"
+            "pathName": "Shoot Left Trench"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "ShootAlign"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Collect Fuel Autos",
+  "folder": "Shoot Autos",
   "choreoAuto": false
 }

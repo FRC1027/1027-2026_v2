@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.811036144578313,
-        "y": 7.280530120481927
+        "x": 3.54922891566265,
+        "y": 0.7129759036144572
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.811036144578313,
-        "y": 7.030530120481927
+        "x": 3.3457955478609662,
+        "y": 0.8582854520442311
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.811036144578313,
-        "y": 1.2156506024096394
+        "x": 1.8335783132530121,
+        "y": 1.7292530120481935
       },
       "prevControl": {
-        "x": 7.811036144578313,
-        "y": 1.4656506024096394
+        "x": 2.0301578979586172,
+        "y": 1.5747976240652168
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0,
+      "name": "ShootAlign",
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 42.58049078334363
   },
   "reversed": false,
-  "folder": "Collect Fuel Paths",
+  "folder": "Shoot Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

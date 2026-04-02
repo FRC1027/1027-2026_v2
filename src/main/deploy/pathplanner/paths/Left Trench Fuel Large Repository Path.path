@@ -3,38 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.811036144578313,
-        "y": 7.280530120481927
+        "x": 3.5383012048192777,
+        "y": 7.367951807228916
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.811036144578313,
-        "y": 7.030530120481927
+        "x": 4.598289156626506,
+        "y": 7.44444578313253
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.811036144578313,
-        "y": 1.2156506024096394
+        "x": 7.767325301204821,
+        "y": 7.25867469879518
       },
       "prevControl": {
-        "x": 7.811036144578313,
-        "y": 1.4656506024096394
+        "x": 6.48878313253012,
+        "y": 7.422590361445782
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6879668049792564,
+      "rotationDegrees": -10.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0,
+      "name": "HopperExpand/Retract",
+      "waypointRelativePos": 0.6163771712158772,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -90.70731936854418
   },
   "reversed": false,
   "folder": "Collect Fuel Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
