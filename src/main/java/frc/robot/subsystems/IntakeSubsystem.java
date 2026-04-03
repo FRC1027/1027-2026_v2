@@ -70,6 +70,10 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param speed The speed to set the motor to (between -1.0 and 1.0).
      */
     public void setIntakeSpeed(double speed) {
-        intakeMotor.set(speed);
+        if (isHopperEnlarged.getAsBoolean()){
+            intakeMotor.set(speed);
+        } else {
+            intakeMotor.set(0.0);
+        }
     }
 }

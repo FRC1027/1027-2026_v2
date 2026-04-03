@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -27,6 +28,9 @@ public class HopperSubsystem extends SubsystemBase {
     // Hopper motor.
     private final SparkMax hopperMotor;
 
+    // Encoder for the hopper motor.
+    private final RelativeEncoder hopperEncoder;
+
     // Motor configuration for the hopper motor.
     public static final SparkMaxConfig hopperConfig = new SparkMaxConfig();
 
@@ -46,6 +50,9 @@ public class HopperSubsystem extends SubsystemBase {
 
         // Initialize the hopper motor using configured CAN ID.
         hopperMotor = new SparkMax(HopperConstants.HOPPER_MOTOR_ID1, MotorType.kBrushless);
+
+        // Get the encoder associated with the hopperMotor.
+        hopperEncoder = hopperMotor.getEncoder();
 
         // Configure the hopper motor using safe parameter reset and persistent parameter storage.
         hopperMotor.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -79,27 +86,33 @@ public class HopperSubsystem extends SubsystemBase {
      */
     public Command hopperEnlarger2000Command() {
         return Commands.defer(() -> {
-            if (!hopperEnlarged) {
-                System.out.println("State of Hopper: " + hopperEnlarged);
+            // Get the current position of the hopperMotor from the encoder.
+            double initialPosition = hopperEncoder.getPosition();
 
-                // Example: run the hopper at 50% speed for 2 seconds to fully enlarge (tuning is required)
+            // Number of rotations required to fully extend/retract the hopper.
+            double targetRotations = 5.0; // Tuning required: number of rotations to fully extend/retract.
+
+            if (!hopperEnlarged) {
+                System.out.println("Hopper is Extended: " + hopperEnlarged);
+
+                // Run the hopper forward until the encoder reads initialPosition + targetRotations.
                 return run(() -> setHopperSpeed(0.5))
-                        .withTimeout(2.0) // Time how long it takes to fully extend the hopper with a known speed
+                        .until(() -> hopperEncoder.getPosition() >= initialPosition + targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
                             hopperEnlarged = true;
-                            System.out.println("State of Hopper: " + hopperEnlarged);
+                            System.out.println("Hopper is Extended: " + hopperEnlarged);
                         });
             } else {
-                System.out.println("State of Hopper: " + hopperEnlarged);
+                System.out.println("Hopper is Extended: " + hopperEnlarged);
 
-                // Example: run the hopper at 50% speed for 2 seconds to fully enlarge (tuning is required)
+                // Run the hopper in reverse until the encoder reads initialPosition - targetRotations.
                 return run(() -> setHopperSpeed(-0.5))
-                        .withTimeout(2.0) // Time how long it takes to fully retract the hopper with a known speed
+                        .until(() -> hopperEncoder.getPosition() <= initialPosition - targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
                             hopperEnlarged = false;
-                            System.out.println("State of Hopper: " + hopperEnlarged);
+                            System.out.println("Hopper is Extended: " + hopperEnlarged);
                         });
             }
         }, Set.of(this));
