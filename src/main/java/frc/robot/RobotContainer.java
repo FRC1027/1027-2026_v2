@@ -187,11 +187,15 @@ public class RobotContainer {
     // Controls the intake to run continuously via the `x` button (TOGGLEABLE).
     mechXbox.x().toggleOnTrue(m_intake.continuousIntakeCommand());
 
+    mechXbox.a().whileTrue(m_hopper.moveHopperDown());
+
+    mechXbox.b().whileTrue(m_hopper.moveHopperUp());
+
     // Controls the shooter to align and shoot at a target tag with the `b` button.
-    mechXbox.b().whileTrue(m_shooter.shootAlign(drivebase));
+    //mechXbox.b().whileTrue(m_shooter.shootAlign(drivebase));
 
     // TEST BINDING: Controls the shooter to shoot with the `a` button (TOGGLEABLE).
-    mechXbox.a().toggleOnTrue(m_shooter.shoot());
+    //mechXbox.a().toggleOnTrue(m_shooter.shoot());
 
     // TEST BINDING: Controls the shooter to run at full speed with the `y` button (TOGGLEABLE).
     mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());

@@ -139,6 +139,20 @@ public class HopperSubsystem extends SubsystemBase {
         }, Set.of(this));
     }
 
+    public Command moveHopperDown() {
+        return runEnd(
+            () -> setHopperSpeed(0.25),
+            () -> setHopperSpeed(0.0)
+        );
+    }
+
+    public Command moveHopperUp() {
+        return runEnd(
+            () -> setHopperSpeed(-0.25),
+            () -> setHopperSpeed(0.0)
+        );
+    }
+
     /**
      * Actively holds the hopper at a given position using the PID controller.
      *

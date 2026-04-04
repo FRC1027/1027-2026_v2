@@ -104,9 +104,6 @@ public final class Constants {
     /** CAN ID for the primary hopper motor. */
     public static final int HOPPER_MOTOR_ID1 = 51;
 
-    /** CAN ID for the follower hopper motor. */
-    public static final int HOPPER_MOTOR_ID2 = 52;
-
     /** Gear ration for the hopper motor. */
     public static final int HOPPER_GEAR_RATIO = 81;
 
