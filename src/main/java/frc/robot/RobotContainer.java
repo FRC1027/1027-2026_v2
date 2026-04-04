@@ -125,10 +125,10 @@ public class RobotContainer {
     m_indexer = new IndexerSubsystem();
 
     // Initialize the ShooterSubsystem
-    m_shooter = new ShooterSubsystem(m_indexer, m_hopper);
+    m_shooter = new ShooterSubsystem(m_indexer);
 
     // Bind the drivebase to the shooter for the new Odometry testing
-    m_shooter.setDrivebase(drivebase);
+    //m_shooter.setDrivebase(drivebase);
 
     /**
      * Register NamedCommands for use in PathPlanner autonomous paths here. This allows the commands to be
@@ -182,7 +182,7 @@ public class RobotContainer {
     mechXbox.leftBumper().whileTrue(m_hopper.manualHopperControl());
 
     // Controls the enlargment/retraction of the hopper with the `y` button (TOGGLEABLE).
-    mechXbox.y().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
+    //mechXbox.y().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
 
     // Controls the intake to run continuously via the `x` button (TOGGLEABLE).
     mechXbox.x().toggleOnTrue(m_intake.continuousIntakeCommand());
@@ -194,7 +194,7 @@ public class RobotContainer {
     mechXbox.a().toggleOnTrue(m_shooter.shoot());
 
     // TEST BINDING: Controls the shooter to run at full speed with the `y` button (TOGGLEABLE).
-    //mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
+    mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
 
     /* ================= Driver Control Bindings ================= */
 

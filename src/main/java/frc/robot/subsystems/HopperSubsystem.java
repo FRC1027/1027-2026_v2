@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -31,6 +34,9 @@ public class HopperSubsystem extends SubsystemBase {
     // Encoder for the hopper motor.
     private final RelativeEncoder hopperEncoder;
 
+    // PID Controller for active position holding.
+    private final SparkClosedLoopController hopperPIDController;
+
     // Motor configuration for the hopper motor.
     public static final SparkMaxConfig hopperConfig = new SparkMaxConfig();
 
@@ -38,6 +44,12 @@ public class HopperSubsystem extends SubsystemBase {
         hopperConfig
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(50);
+
+        // Configure PID constants for active holding.
+        // P-gain tuning required!
+        hopperConfig.closedLoop
+            .pid(0.1, 0.0, 0.0)
+            .outputRange(-0.5, 0.5); // Limit effort to half power to avoid burning out the motor.
     }
 
     /**
@@ -53,6 +65,9 @@ public class HopperSubsystem extends SubsystemBase {
 
         // Get the encoder associated with the hopperMotor.
         hopperEncoder = hopperMotor.getEncoder();
+
+        // Get the PID controller associated with the hopperMotor.
+        hopperPIDController = hopperMotor.getClosedLoopController();
 
         // Configure the hopper motor using safe parameter reset and persistent parameter storage.
         hopperMotor.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -89,8 +104,12 @@ public class HopperSubsystem extends SubsystemBase {
             // Get the current position of the hopperMotor from the encoder.
             double initialPosition = hopperEncoder.getPosition();
 
-            // Number of rotations required to fully extend/retract the hopper.
-            double targetRotations = 5.0; // Tuning required: number of rotations to fully extend/retract.
+            // The arm needs to move 90 degrees, which is 0.25 of a full rotation (360 degrees).
+            double targetArmRotations = 90.0 / 360.0;
+
+            // Number of motor rotations required to fully extend/retract the hopper arm by 90 degrees.
+            // The motor has an 81:1 gear ratio, meaning the motor turns 81 times for every 1 turn of the arm.
+            double targetRotations = targetArmRotations * HopperConstants.HOPPER_GEAR_RATIO;
 
             if (!hopperEnlarged) {
                 System.out.println("Hopper is Extended: " + hopperEnlarged);
@@ -100,6 +119,7 @@ public class HopperSubsystem extends SubsystemBase {
                         .until(() -> hopperEncoder.getPosition() >= initialPosition + targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
+                            //holdPosition(initialPosition + targetRotations);
                             hopperEnlarged = true;
                             System.out.println("Hopper is Extended: " + hopperEnlarged);
                         });
@@ -111,11 +131,23 @@ public class HopperSubsystem extends SubsystemBase {
                         .until(() -> hopperEncoder.getPosition() <= initialPosition - targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
+                            //holdPosition(initialPosition - targetRotations);
                             hopperEnlarged = false;
                             System.out.println("Hopper is Extended: " + hopperEnlarged);
                         });
             }
         }, Set.of(this));
+    }
+
+    /**
+     * Actively holds the hopper at a given position using the PID controller.
+     *
+     * @param targetPosition the encoder position to hold at
+     */
+    @SuppressWarnings("removal") // Suppress deprecation warning if old REVLib version requires it, but use new format if possible.
+    public void holdPosition(double targetPosition) {
+        // Fall back to old method if ClosedLoopSlot isn't imported, but the lint showed it's deprecated. Let's use the new one.
+        hopperPIDController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     /**

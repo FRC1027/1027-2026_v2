@@ -50,7 +50,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public Command runIndexerCommand() {
         return Commands.sequence(
             Commands.waitSeconds(2.0), // Delays the start of the indexer by a set time interval
-            run(() -> setIndexerSpeed(1.0))
+            run(() -> setIndexerSpeed(-1.0))
         ).finallyDo(interrupted -> setIndexerSpeed(0.0)); // Ensure indexer is stopped when this command ends or is interrupted.
     }
 

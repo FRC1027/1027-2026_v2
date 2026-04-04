@@ -84,7 +84,7 @@ public final class Constants {
     public static final double VELOCITY_EFFICIENCY = 4.35;
 
     /** Fixed shooter launch angle in radians (used in the projectile motion calculation). */
-    public static final double SHOOTER_ANGLE = Math.toRadians(68.0); // Convert 68 degrees to radians
+    public static final double SHOOTER_ANGLE = Math.toRadians(80.0); // Convert 68 degrees to radians
 
     /** Height of the shooter exit point above the floor, in meters. */
     public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28); // 27 inches to meters
@@ -106,6 +106,9 @@ public final class Constants {
 
     /** CAN ID for the follower hopper motor. */
     public static final int HOPPER_MOTOR_ID2 = 52;
+
+    /** Gear ration for the hopper motor. */
+    public static final int HOPPER_GEAR_RATIO = 81;
 
     /** Hopper extension length in meters. */
     public static final double HOPPER_EXTENTION_LENGTH = Units.inchesToMeters(12); // MEASURE THIS
@@ -145,6 +148,9 @@ public final class Constants {
 
     /** The buffer for Limelight detection distance calculation, in seconds. */
     public static final double LIMELIGHT_TARGET_TIMEOUT = 0.2;
+
+    /** The angle the Limelight is mounted at relative to the horizon, in radians (Positive = Pitched Up). */
+    public static final double LIMELIGHT_MOUNT_ANGLE_RADIANS = Math.toRadians(37.0);
   }
 
   /* ================= Drivebase ================= */

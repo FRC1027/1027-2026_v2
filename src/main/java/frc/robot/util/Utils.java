@@ -45,7 +45,7 @@ public final class Utils {
    * @param limelight a Limelight object reference that can be used to retrieve pose information.
    * @return Distance from bumper to target tag in meters, or NaN if the Limelight pose is unavailable.
    */
-  public static double calculateDistanceToTarget(NetworkTable limelight, boolean isHopperExtended) {
+  public static double calculateDistanceToTarget(NetworkTable limelight) {
     // Read the target pose in the camera coordinate frame (x = left/right, y = up/down, z = forward).
     double[] pose = limelight.getEntry("targetpose_cameraspace").getDoubleArray(new double[0]);
 
@@ -57,21 +57,25 @@ public final class Utils {
     // Gets the current time in seconds.
     double currentTime = Timer.getFPGATimestamp();
 
-    if (hasTarget && pose.length >= 3 && (fid == 4 || fid == 10 || fid == 26)){
+    if (pose.length >= 3 && (fid == 4 || fid == 10 || fid == 26)){
       double tx = pose[0]; // Horizontal offset (left/right) in meters.
-      //double ty = pose[1]; // Vertical offset (up/down) in meters.
+      double ty = pose[1]; // Vertical offset (up/down) in meters.
       double tz = pose[2]; // Forward distance (depth) in meters.
 
-      // Compute planar distance from camera to tag using X/Z components.
-      double cameraToTag = Math.sqrt(tx * tx + tz * tz);
+      // Assume the camera is pitched up by the mount angle. We rotate the Z distance down to horizontal.
+      double mountAngle = ObjectRecognitionConstants.LIMELIGHT_MOUNT_ANGLE_RADIANS;
+      double tzPlanar = tz * Math.cos(mountAngle) + ty * Math.sin(mountAngle);
+
+      // Compute horizontal planar distance from camera to tag using X/Z components.
+      double cameraToTag = Math.sqrt(tx * tx + tzPlanar * tzPlanar);
 
       // Convert from camera distance to shooter distance
       double shooterToTag = Math.max(0.0, (cameraToTag + RobotProperties.CAM_TO_SHOOTER_DISTANCE));
 
       // If the hopper is extended, add the extension length to the distance.
-      if (isHopperExtended) {
-        cameraToTag += HopperConstants.HOPPER_EXTENTION_LENGTH;
-      }
+      // if (isHopperExtended) {
+      //   cameraToTag += HopperConstants.HOPPER_EXTENTION_LENGTH;
+      // }
 
       // Print statement for debugging: should print true repeatedly if Limelight flicker mitigation works correctly.
       System.out.println("TV: " + hasTarget + " Distance: " + shooterToTag);
