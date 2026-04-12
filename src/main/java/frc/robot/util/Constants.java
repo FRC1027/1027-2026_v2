@@ -117,7 +117,7 @@ public final class Constants {
     private IntakeConstants() {} // Prevent instantiation
 
     /** CAN ID for the back intake motor. */
-    public static final int INTAKE_MOTOR_ID = 29;
+    public static final int INTAKE_MOTOR_ID = 52;
   }
 
   /* ================= Indexer ================= */

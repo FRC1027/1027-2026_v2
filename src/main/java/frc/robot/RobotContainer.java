@@ -138,6 +138,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootAlign", m_shooter.shootAlign(drivebase)); // Adds the shootAlign command as a named command for use in PathPlanner paths
     NamedCommands.registerCommand("Intake", m_intake.continuousIntakeCommand()); // Adds the intake command as a named command, for use in PathPlanner paths
     NamedCommands.registerCommand("HopperExpand/Retract", m_hopper.hopperEnlarger2000Command()); // Adds the hopperEnlarger2000Command as a named command for use in PathPlanner paths
+    NamedCommands.registerCommand("ShootClose", m_shooter.fullSpeed());
 
     // Initialize the SendableChooser that adds all of the PathPlanner Autos to the dashboard
     m_chooser = AutoBuilder.buildAutoChooser();
@@ -177,19 +178,15 @@ public class RobotContainer {
 
     /* ================= Mechanism Control Bindings ================= */
 
-    // Controls the hopper with the mechXbox bumpers (WILL NOT BE USED IN COMPITITION)
-    mechXbox.rightBumper().whileTrue(m_hopper.manualHopperControl());
-    mechXbox.leftBumper().whileTrue(m_hopper.manualHopperControl());
-
     // Controls the enlargment/retraction of the hopper with the `y` button (TOGGLEABLE).
-    //mechXbox.y().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
+    mechXbox.a().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
 
     // Controls the intake to run continuously via the `x` button (TOGGLEABLE).
-    mechXbox.x().toggleOnTrue(m_intake.continuousIntakeCommand());
+    mechXbox.b().toggleOnTrue(m_intake.continuousIntakeCommand());
 
-    mechXbox.a().whileTrue(m_hopper.moveHopperDown());
+    mechXbox.rightBumper().whileTrue(m_hopper.moveHopperUp());
 
-    mechXbox.b().whileTrue(m_hopper.moveHopperUp());
+    mechXbox.leftBumper().whileTrue(m_hopper.moveHopperDown());
 
     // Controls the shooter to align and shoot at a target tag with the `b` button.
     //mechXbox.b().whileTrue(m_shooter.shootAlign(drivebase));

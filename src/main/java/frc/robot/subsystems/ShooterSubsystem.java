@@ -215,7 +215,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public Command fullSpeed(){
         return Commands.deadline(
             runEnd(
-                () -> setShooterSpeed(0.52), 
+                () -> setShooterSpeed(0.6), 
                 () -> {
                     shooterMotor1.setControl(new NeutralOut());
                     shooterMotor2.setControl(followerRequest);

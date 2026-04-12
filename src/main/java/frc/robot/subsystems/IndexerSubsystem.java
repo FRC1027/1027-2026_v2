@@ -54,6 +54,12 @@ public class IndexerSubsystem extends SubsystemBase {
         ).finallyDo(interrupted -> setIndexerSpeed(0.0)); // Ensure indexer is stopped when this command ends or is interrupted.
     }
 
+    // public Command reverseIndexerCommand() {
+    //     return Commands.sequence(
+    //         run(() -> setIndexerSpeed(-1.0))
+    //     ).finallyDo(interrupted -> indexerMotor.setIdleMode(IdleMode.kCoast)); // Ensure indexer is stopped when this command ends or is interrupted.
+    // }
+
     /**
      * Sets the speed of the indexer motor.
      * 

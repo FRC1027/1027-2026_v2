@@ -104,8 +104,8 @@ public class HopperSubsystem extends SubsystemBase {
             // Get the current position of the hopperMotor from the encoder.
             double initialPosition = hopperEncoder.getPosition();
 
-            // The arm needs to move 90 degrees, which is 0.25 of a full rotation (360 degrees).
-            double targetArmRotations = 90.0 / 360.0;
+            // The arm needs to move 100 degrees, which is 0.25 of a full rotation (360 degrees).
+            double targetArmRotations = 105.0 / 360.0;
 
             // Number of motor rotations required to fully extend/retract the hopper arm by 90 degrees.
             // The motor has an 81:1 gear ratio, meaning the motor turns 81 times for every 1 turn of the arm.
@@ -115,7 +115,7 @@ public class HopperSubsystem extends SubsystemBase {
                 System.out.println("Hopper is Extended: " + hopperEnlarged);
 
                 // Run the hopper forward until the encoder reads initialPosition + targetRotations.
-                return run(() -> setHopperSpeed(0.5))
+                return run(() -> setHopperSpeed(0.2))
                         .until(() -> hopperEncoder.getPosition() >= initialPosition + targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
@@ -127,7 +127,7 @@ public class HopperSubsystem extends SubsystemBase {
                 System.out.println("Hopper is Extended: " + hopperEnlarged);
 
                 // Run the hopper in reverse until the encoder reads initialPosition - targetRotations.
-                return run(() -> setHopperSpeed(-0.5))
+                return run(() -> setHopperSpeed(-0.2))
                         .until(() -> hopperEncoder.getPosition() <= initialPosition - targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
