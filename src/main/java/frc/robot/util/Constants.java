@@ -38,7 +38,7 @@ public final class Constants {
     public static final double MAX_SPEED = Units.feetToMeters(14.5);
 
     /** Distance from the camera to the front bumper in meters. */
-    public static final double CAM_TO_SHOOTER_DISTANCE = Units.feetToMeters(1.5);
+    public static final double CAM_TO_SHOOTER_DISTANCE = Units.feetToMeters(2.33);
   }
 
   /* ================= Shooter ================= */
@@ -147,7 +147,7 @@ public final class Constants {
     public static final double LIMELIGHT_TARGET_TIMEOUT = 0.2;
 
     /** The angle the Limelight is mounted at relative to the horizon, in radians (Positive = Pitched Up). */
-    public static final double LIMELIGHT_MOUNT_ANGLE_RADIANS = Math.toRadians(37.0);
+    public static final double LIMELIGHT_MOUNT_ANGLE_RADIANS = Math.toRadians(13.5);
   }
 
   /* ================= Drivebase ================= */

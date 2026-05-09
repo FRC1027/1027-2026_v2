@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.Constants.HopperConstants;
 import frc.robot.util.Constants.ObjectRecognitionConstants;
 import frc.robot.util.Constants.RobotProperties;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 
 /**
  * Shared utility methods used across robot subsystems and commands.
@@ -49,6 +50,8 @@ public final class Utils {
     // Read the target pose in the camera coordinate frame (x = left/right, y = up/down, z = forward).
     double[] pose = limelight.getEntry("targetpose_cameraspace").getDoubleArray(new double[0]);
 
+    System.out.println("Pose: " + java.util.Arrays.toString(pose));
+
     // Returns true if an AprilTag is currently in view; false if otherwise.
     boolean hasTarget = LimelightHelpers.getTV(ObjectRecognitionConstants.LIMELIGHT_NAME);
 
@@ -56,6 +59,8 @@ public final class Utils {
 
     // Gets the current time in seconds.
     double currentTime = Timer.getFPGATimestamp();
+
+    System.out.println("Pose Length: " + pose.length + " Fiducial ID: " + fid);
 
     if (pose.length >= 3 && (fid == 4 || fid == 10 || fid == 26)){
       double tx = pose[0]; // Horizontal offset (left/right) in meters.
@@ -66,16 +71,13 @@ public final class Utils {
       double mountAngle = ObjectRecognitionConstants.LIMELIGHT_MOUNT_ANGLE_RADIANS;
       double tzPlanar = tz * Math.cos(mountAngle) + ty * Math.sin(mountAngle);
 
+      System.out.println("tz: " + tz + " ty: " + ty + " tzPlanar: " + tzPlanar);
+
       // Compute horizontal planar distance from camera to tag using X/Z components.
       double cameraToTag = Math.sqrt(tx * tx + tzPlanar * tzPlanar);
 
       // Convert from camera distance to shooter distance
-      double shooterToTag = Math.max(0.0, (cameraToTag + RobotProperties.CAM_TO_SHOOTER_DISTANCE));
-
-      // If the hopper is extended, add the extension length to the distance.
-      // if (isHopperExtended) {
-      //   cameraToTag += HopperConstants.HOPPER_EXTENTION_LENGTH;
-      // }
+      double shooterToTag = Math.max(0.0, (cameraToTag - RobotProperties.CAM_TO_SHOOTER_DISTANCE));
 
       // Print statement for debugging: should print true repeatedly if Limelight flicker mitigation works correctly.
       System.out.println("TV: " + hasTarget + " Distance: " + shooterToTag);

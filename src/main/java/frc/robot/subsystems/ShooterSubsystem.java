@@ -92,6 +92,13 @@ public class ShooterSubsystem extends SubsystemBase {
         // Publish the radius efficiency to SmartDashboard so it can be tuned live.
         SmartDashboard.putNumber("Shooter/VelocityEfficiency", ShooterConstants.VELOCITY_EFFICIENCY);
     }
+    
+    public Command testDistance() {
+        return Commands.run(() -> {
+            double distance = Utils.calculateDistanceToTarget(limelight);
+            System.out.println("Calculated Distance to Target: " + distance + " meters");
+        });
+    }
 
     /**
      * Calculates the required launch RPS using projectile motion physics.
