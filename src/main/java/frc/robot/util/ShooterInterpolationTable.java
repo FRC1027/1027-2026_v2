@@ -9,7 +9,7 @@ public class ShooterInterpolationTable {
     static {
         // Populate with empirical values from successful shots on the field.
         // FORMAT: Distance (Meters), RPS (Revolutions/Seconds).
-        map.put(1.0, 30.0);
+        map.put(2.7947841130879825, 108.50214073779091);
         map.put(2.0, 45.0);
         map.put(3.0, 55.0);
         map.put(4.0, 65.0);

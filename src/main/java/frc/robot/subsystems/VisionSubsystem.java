@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Constants.ObjectRecognitionConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.RawDetection;
 import frc.robot.util.LimelightHelpers.RawFiducial;
 
-public class VisionSubsystem {
+public class VisionSubsystem extends SubsystemBase{
     /* Instance variable to store the name of the limelight camera to get data from. */
     private String limelightName;
     private int pipelineIndex;
@@ -18,6 +19,7 @@ public class VisionSubsystem {
     private double fiducialta;
     private double distToCamera;
     private double distToRobot;
+    private double horizontalDistToCamera;
     private double ambiguity;
     private boolean hasTarget;
     private int[] desiredTagIDs;
@@ -40,6 +42,7 @@ public class VisionSubsystem {
         // Set the initial pipeline index for the Limelight as appropriate.
         if (pipelineIndex == 0) {
             LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex); // Set to AprilTag pipeline
+            LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, desiredTagIDs); // Set the desired tag ID filters for the AprilTag pipeline
         } else if (pipelineIndex == 1) {
             LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex); // Set to neural network pipeline
         } else {
@@ -73,9 +76,12 @@ public class VisionSubsystem {
                     distToCamera = fiducial.distToCamera;   // Distance to camera
                     distToRobot = fiducial.distToRobot;     // Distance to robot
                     ambiguity = fiducial.ambiguity;         // Tag pose ambiguity
-                    System.out.println("Fiducial ID: " + fiducialID + ", TXNC: " + fiducialtxnc + ", TYNC: " + fiducialtync);
-                    System.out.println("DistToCamera: " + distToCamera + ", DistToRobot: " + distToRobot + ", Ambiguity: " + ambiguity);
+                    //System.out.println("Fiducial ID: " + fiducialID + ", TXNC: " + fiducialtxnc + ", TYNC: " + fiducialtync);
                 }
+
+                // Calculate horizontal distance to camera using the vertical offset (tync) and the distance to camera.
+                horizontalDistToCamera = distToCamera * Math.cos(Math.toRadians(fiducialtync));
+                System.out.println("DistToCamera: " + distToCamera + ", HorizontalDistToCamera: " + horizontalDistToCamera + ", Ambiguity: " + ambiguity);
             } else {
                 if (currentTime - lastSeenTime < ObjectRecognitionConstants.LIMELIGHT_TARGET_TIMEOUT) {
                     hasTarget = true;
@@ -143,6 +149,10 @@ public class VisionSubsystem {
 
     public double getDistToRobot() {
         return distToRobot;
+    }
+
+    public double getHorizontalDistToCamera() {
+        return horizontalDistToCamera;
     }
 
     public double getAmbiguity() {

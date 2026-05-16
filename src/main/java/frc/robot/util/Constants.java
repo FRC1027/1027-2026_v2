@@ -94,6 +94,9 @@ public final class Constants {
 
     /** Vertical offset between the target and the shooter exit point (meters). */
     public static final double HEIGHT_DIFFERENCE = GOAL_HEIGHT - SHOOTER_HEIGHT;
+
+    /** Horizontal offset from the shooter to the Limelight (meters). This is subtracted from the horizontal distance to the target when using Limelight data for RPS calculations, to convert from camera-to-target distance to shooter-to-target distance. */
+    public static final double SHOOTER_TO_LIMELIGHT_OFFSET = Units.inchesToMeters(5.5); // 5.5 inches to meters
   }
 
   /* ================= Hopper ================= */
@@ -144,7 +147,7 @@ public final class Constants {
     public static final int OBJECT_DETECTION_PIPELINE_INDEX = 1;
 
     /** The buffer for Limelight detection distance calculation, in seconds. */
-    public static final double LIMELIGHT_TARGET_TIMEOUT = 0.2;
+    public static final double LIMELIGHT_TARGET_TIMEOUT = 1.0; //SWITCH BACK TO 0.2
 
     /** The angle the Limelight is mounted at relative to the horizon, in radians (Positive = Pitched Up). */
     public static final double LIMELIGHT_MOUNT_ANGLE_RADIANS = Math.toRadians(13.5);

@@ -31,7 +31,9 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.util.Constants.ObjectRecognitionConstants;
 import frc.robot.util.Constants.OperatorConstants;
 
 import java.io.File;
@@ -64,6 +66,9 @@ public class RobotContainer {
 
   // Declaring the ShooterSubsystem
   private final ShooterSubsystem m_shooter;
+
+  // Declaring the VisionSubsystem
+  private final VisionSubsystem m_vision;
 
   // Constructs a SendableChooser for autonomous command selection on the dashboard, allowing for dynamic selection of autonomous routines.
   private final SendableChooser<Command> m_chooser;
@@ -115,6 +120,9 @@ public class RobotContainer {
     // Silence the joystick connection warning that can appear on the dashboard when using certain controllers
     DriverStation.silenceJoystickConnectionWarning(true);
 
+    // Initialize the VisionSubsystem
+    m_vision = new VisionSubsystem(ObjectRecognitionConstants.LIMELIGHT_NAME, 0, new int[]{5, 10});
+
     // Initialize the HopperSubsystem
     m_hopper = new HopperSubsystem();
 
@@ -125,7 +133,7 @@ public class RobotContainer {
     m_indexer = new IndexerSubsystem();
 
     // Initialize the ShooterSubsystem
-    m_shooter = new ShooterSubsystem(m_indexer);
+    m_shooter = new ShooterSubsystem(m_indexer, m_vision);
 
     // Bind the drivebase to the shooter for the new Odometry testing
     //m_shooter.setDrivebase(drivebase);
@@ -179,7 +187,7 @@ public class RobotContainer {
     /* ================= Mechanism Control Bindings ================= */
 
     // Controls the enlargment/retraction of the hopper with the `y` button (TOGGLEABLE).
-    mechXbox.a().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
+    //mechXbox.a().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
 
     // Controls the intake to run continuously via the `x` button (TOGGLEABLE).
     mechXbox.b().toggleOnTrue(m_intake.continuousIntakeCommand());
@@ -192,12 +200,14 @@ public class RobotContainer {
     //mechXbox.b().whileTrue(m_shooter.shootAlign(drivebase));
 
     // TEST BINDING: Controls the shooter to shoot with the `a` button (TOGGLEABLE).
-    //mechXbox.a().toggleOnTrue(m_shooter.shoot());
+    mechXbox.a().toggleOnTrue(m_shooter.shoot());
 
     // TEST BINDING: Controls the shooter to run at full speed with the `y` button (TOGGLEABLE).
-    //mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
+    mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
 
-    mechXbox.y().whileTrue(m_shooter.testDistance());
+    //mechXbox.y().whileTrue(m_shooter.testDistanceManual());
+
+    mechXbox.x().whileTrue(m_shooter.testDistanceAutomatic());
 
     /* ================= Driver Control Bindings ================= */
 

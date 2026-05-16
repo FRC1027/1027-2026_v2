@@ -41,6 +41,9 @@ public class ShooterSubsystem extends SubsystemBase {
     // Reference to the IndexerSubsystem to run the indexer command in parallel with shooting.
     private final IndexerSubsystem m_indexer;
 
+    // Reference to the VisionSubsystem to get distance data for RPS calculations.
+    private final VisionSubsystem visionSubsystem;
+
     // Reference to the HopperSubsystem to check hopper extension state for distance calculations.
     //private final HopperSubsystem m_hopper;
 
@@ -65,9 +68,12 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param m_indexer a reference to the IndexerSubsystem for use in parallel control of the subsystems.
      * @param m_hopper a reference to the HopperSubsystem for use in distance calculations from the moveable Limelight.
      */
-    public ShooterSubsystem(IndexerSubsystem m_indexer) {
+    public ShooterSubsystem(IndexerSubsystem m_indexer, VisionSubsystem visionSubsystem) {
         // Store the reference to the IndexerSubsystem for use in shooting commands.
         this.m_indexer = m_indexer;
+
+        // Store the reference to the VisionSubsystem for use in distance calculations.
+        this.visionSubsystem = visionSubsystem;
 
         // Store the reference to the HopperSubsystem for use in distance calculations that account for hopper extension.
         //this.m_hopper = m_hopper;
@@ -93,10 +99,19 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter/VelocityEfficiency", ShooterConstants.VELOCITY_EFFICIENCY);
     }
     
-    public Command testDistance() {
+    public Command testDistanceManual() {
         return Commands.run(() -> {
             double distance = Utils.calculateDistanceToTarget(limelight);
-            System.out.println("Calculated Distance to Target: " + distance + " meters");
+            System.out.println("Calculated Distance to Target: " + distance + " meters (MANUAL)");
+        });
+    }
+
+    public Command testDistanceAutomatic() {
+        return Commands.run(() -> {
+            // Updates the Limelight variables to be used in calculations
+            visionSubsystem.periodic();
+            double distance = visionSubsystem.getDistToCamera();
+            System.out.println("Calculated Distance to Target: " + distance + " meters (AUTOMATIC)");
         });
     }
 
@@ -108,7 +123,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double calculateTheoreticalRPS() {
         // Calculates the distance from the shooter to the AprilTag.
-        double shooterToTag = Utils.calculateDistanceToTarget(limelight);
+        double shooterToTag = visionSubsystem.getHorizontalDistToCamera() - ShooterConstants.SHOOTER_TO_LIMELIGHT_OFFSET;
 
         // Return NaN if the distance data is missing or invalid.
         if (!Double.isFinite(shooterToTag)) {
@@ -134,8 +149,9 @@ public class ShooterSubsystem extends SubsystemBase {
         // Convert linear velocity to wheel RPS using the effective velocity value.
         double rps = adjustedVelocity / (2 * Math.PI * ShooterConstants.SHOOTER_WHEEL_RADIUS);
 
-        // Return the calculated wheel speed in revolutions per second (Multiply by Compression Loss Compensation).
-        return rps * 1.03;
+        // Return the calculated wheel speed in revolutions per second.
+        System.out.println(rps);
+        return rps;
     }
 
     /**
@@ -222,7 +238,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public Command fullSpeed(){
         return Commands.deadline(
             runEnd(
-                () -> setShooterSpeed(0.6), 
+                () -> setShooterSpeed(1.0), 
                 () -> {
                     shooterMotor1.setControl(new NeutralOut());
                     shooterMotor2.setControl(followerRequest);
@@ -249,7 +265,8 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double getDistance() {
         // Calculate the distance from the shooter to the target tag using Limelight data.
-        return Utils.calculateDistanceToTarget(limelight);
+        double shooterToTag = visionSubsystem.getHorizontalDistToCamera() - ShooterConstants.SHOOTER_TO_LIMELIGHT_OFFSET;
+        return shooterToTag;
     }
 
     // ========================================================================
