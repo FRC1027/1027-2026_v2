@@ -181,7 +181,6 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     Command driveFieldOrientedDirectAngleKeyboard = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
-
     Command driveRobotOrientedCommand = drivebase.driveFieldOriented(driveRobotOriented);
 
     /* ================= Mechanism Control Bindings ================= */
@@ -303,5 +302,4 @@ public class RobotContainer {
   public void zeroGyroToAlliance() {
     drivebase.zeroGyroWithAlliance();
   }
-  
 }

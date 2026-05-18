@@ -22,7 +22,6 @@ public class VisionSubsystem extends SubsystemBase{
     private double horizontalDistToCamera;
     private double ambiguity;
     private boolean hasTarget;
-    private int[] desiredTagIDs;
 
     /* Instance variables to store neural network detection data retrieved from the AprilTag pipeline. */
     private int neuralClassID;
@@ -37,7 +36,6 @@ public class VisionSubsystem extends SubsystemBase{
     public VisionSubsystem(String limelightName, int pipelineIndex, int[] desiredTagIDs) {
         this.limelightName = limelightName;
         this.pipelineIndex = pipelineIndex;
-        this.desiredTagIDs = desiredTagIDs;
 
         // Set the initial pipeline index for the Limelight as appropriate.
         if (pipelineIndex == 0) {
@@ -178,5 +176,15 @@ public class VisionSubsystem extends SubsystemBase{
 
     public double getNeuralTa() {
         return neuralTa;
+    }
+
+    /* Setter methods for AprilTags/Fiducial and neural network detection data. */
+    public void setPipelineIndex(int pipelineIndex) {
+        this.pipelineIndex = pipelineIndex;
+        LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
+    }
+
+    public void setDesiredTagIDs(int[] desiredTagIDs) {
+        LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, desiredTagIDs);
     }
 }

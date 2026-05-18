@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,9 +43,6 @@ public class ShooterSubsystem extends SubsystemBase {
     // Reference to the VisionSubsystem to get distance data for RPS calculations.
     private final VisionSubsystem visionSubsystem;
 
-    // Reference to the HopperSubsystem to check hopper extension state for distance calculations.
-    //private final HopperSubsystem m_hopper;
-
     // Primary shooter motor controller (leader).
     private final TalonFX shooterMotor1;
 
@@ -75,9 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
         // Store the reference to the VisionSubsystem for use in distance calculations.
         this.visionSubsystem = visionSubsystem;
 
-        // Store the reference to the HopperSubsystem for use in distance calculations that account for hopper extension.
-        //this.m_hopper = m_hopper;
-
         // Initialize the shooter motors using configured CAN IDs.
         shooterMotor1 = new TalonFX(ShooterConstants.SHOOTER_MOTOR_ID1);
         shooterMotor2 = new TalonFX(ShooterConstants.SHOOTER_MOTOR_ID2);
@@ -99,6 +92,7 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter/VelocityEfficiency", ShooterConstants.VELOCITY_EFFICIENCY);
     }
     
+    // TEST METHOD:
     public Command testDistanceManual() {
         return Commands.run(() -> {
             double distance = Utils.calculateDistanceToTarget(limelight);
@@ -106,6 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
 
+    // TEST METHOD:
     public Command testDistanceAutomatic() {
         return Commands.run(() -> {
             // Updates the Limelight variables to be used in calculations
@@ -150,7 +145,7 @@ public class ShooterSubsystem extends SubsystemBase {
         double rps = adjustedVelocity / (2 * Math.PI * ShooterConstants.SHOOTER_WHEEL_RADIUS);
 
         // Return the calculated wheel speed in revolutions per second.
-        System.out.println(rps);
+        System.out.println("Calculated RPS: " + rps);
         return rps;
     }
 
@@ -206,7 +201,7 @@ public class ShooterSubsystem extends SubsystemBase {
             }
             // If no valid tag is seen, return a "do-nothing" command to avoid unintended motion.
             return Commands.none();
-        }, Set.of(this, drivebase)); // Added m_indexer to prevent WPILib Command exception
+        }, Set.of(this, drivebase));
     }
 
     /**
@@ -226,11 +221,10 @@ public class ShooterSubsystem extends SubsystemBase {
             ), 
             m_indexer.runIndexerCommand() // Run the indexer command in parallel to feed balls into the shooter while shooting. The indexer will stop when the shoot command ends.
         );
-        // Note: The previously added `.until(() -> calculateTheoreticalRPS() == 0.0)` is removed 
-        // because it would instantly cancel the command on startup if the Limelight didn't yet have a target.
     }
 
     /**
+     * TEST METHOD:
      * A method used for shooter testing to run the indexer and shooter at full speed without Limelight distance calculation.
      * 
      * @return a command that runs the shooter at full speed in parallel with the intake.

@@ -3,10 +3,9 @@ package frc.robot.util;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Timer;
 
-import frc.robot.util.Constants.HopperConstants;
 import frc.robot.util.Constants.ObjectRecognitionConstants;
 import frc.robot.util.Constants.RobotProperties;
-import frc.robot.util.LimelightHelpers.RawFiducial;
+
 
 /**
  * Shared utility methods used across robot subsystems and commands.
