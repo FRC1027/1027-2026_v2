@@ -146,7 +146,7 @@ public final class Constants {
     /** Pipeline index for neural network object detection. */
     public static final int OBJECT_DETECTION_PIPELINE_INDEX = 1;
 
-    /** The buffer for Limelight detection distance calculation, in seconds. */
+    /** The buffer for Limelight flicker mitigation, in seconds. */
     public static final double LIMELIGHT_TARGET_TIMEOUT = 1.0; //SWITCH BACK TO 0.2
 
     /** The angle the Limelight is mounted at relative to the horizon, in radians (Positive = Pitched Up). */

@@ -14,9 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import frc.robot.RobotContainer;
 import frc.robot.util.Constants.HopperConstants;
 
 import java.util.Set;
@@ -74,27 +72,6 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     /**
-     * Manual hopper control using driver bumpers:
-     * Right bumper expands the hopper, left bumper retracts the bumper, neither stops.
-     * 
-     * KNOWN ISSUE: This command does not update the hopperEnlarged state variable.
-     */
-    public Command manualHopperControl() {
-        return runEnd(() -> {
-            Trigger rightBumper = RobotContainer.mechXbox.rightBumper();
-            Trigger leftBumper = RobotContainer.mechXbox.leftBumper();
-
-            if (rightBumper.getAsBoolean()) {
-                setHopperSpeed(0.7); // Run hopper forward while right bumper is held.
-            } else if (leftBumper.getAsBoolean()) {
-                setHopperSpeed(-0.7); // Run hopper in reverse while left bumper is held.
-            } else {
-                setHopperSpeed(0.0); // Stop when neither bumper is pressed.
-            }
-        }, () -> setHopperSpeed(.0)); // Ensure motors stop when the command ends
-    }
-
-    /**
      * Enlarges or retracts the hopper based on its current state. If the hopper is not enlarged, 
      * it will run the motor to enlarge it; if it is already enlarged, it will run the motor in 
      * reverse to retract it.
@@ -139,6 +116,12 @@ public class HopperSubsystem extends SubsystemBase {
         }, Set.of(this));
     }
 
+    /*
+     * Command to manually move the hopper down at a fixed speed until the command is interrupted, at
+     * which point it will stop the motor. This can be used for testing or manual control, but should not
+     * be used in normal operation since doesn't update the hopperEnlarged state, which could lead to
+     * inconsistent behavior if used alongside the main hopperEnlarger2000Command.
+     */
     public Command moveHopperDown() {
         return runEnd(
             () -> setHopperSpeed(0.25),
@@ -146,6 +129,12 @@ public class HopperSubsystem extends SubsystemBase {
         );
     }
 
+    /*
+     * Command to manually move the hopper up at a fixed speed until the command is interrupted, at
+     * which point it will stop the motor. This can be used for testing or manual control, but should not
+     * be used in normal operation since it doesn't update the hopperEnlarged state, which could lead to
+     * inconsistent behavior if used alongside the main hopperEnlarger2000Command.
+     */
     public Command moveHopperUp() {
         return runEnd(
             () -> setHopperSpeed(-0.25),
@@ -160,7 +149,6 @@ public class HopperSubsystem extends SubsystemBase {
      */
     @SuppressWarnings("removal") // Suppress deprecation warning if old REVLib version requires it, but use new format if possible.
     public void holdPosition(double targetPosition) {
-        // Fall back to old method if ClosedLoopSlot isn't imported, but the lint showed it's deprecated. Let's use the new one.
         hopperPIDController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 

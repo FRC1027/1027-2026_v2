@@ -64,6 +64,12 @@ public class IntakeSubsystem extends SubsystemBase {
         ).onlyWhile(isHopperEnlarged); // If the hopper begins to close while the intake is running, the intake command stops.
     }
 
+    /**
+     * Creates a command that continuously runs the intake motor at a fixed speed.
+     * On interruption (when the bound button is toggled), stop the motor.
+     * 
+     * @return a command that runs the intake at a set speed and stops on interruption.
+     */
     public Command continuousOuttakeCommand() {
         return runEnd(
             () -> setIntakeSpeed(0.9), // Run intake at a set speed.

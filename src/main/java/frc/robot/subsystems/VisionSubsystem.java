@@ -110,6 +110,10 @@ public class VisionSubsystem extends SubsystemBase{
                     neuralTync = detection.tync;        // Y offset (no crosshair)
                     neuralTa = detection.ta;            // Target area
                 }
+
+                // Assume the camera is pitched up by the mount angle. We rotate the Z distance down to horizontal.
+                double mountAngle = ObjectRecognitionConstants.LIMELIGHT_MOUNT_ANGLE_RADIANS;
+                double tzPlanar = tz * Math.cos(mountAngle) + ty * Math.sin(mountAngle);
             } else {
                 if (currentTime - lastSeenTime < ObjectRecognitionConstants.LIMELIGHT_TARGET_TIMEOUT) {
                     hasTarget = true;
@@ -125,6 +129,10 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     /* Getter methods for AprilTag/Fiducial data. */
+    public int getPipelineIndex() {
+        return pipelineIndex;
+    }
+
     public int getFiducialID() {
         return fiducialID;
     }

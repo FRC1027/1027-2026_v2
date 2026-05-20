@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.util.Constants.ObjectRecognitionConstants;
 import frc.robot.util.LimelightHelpers;
@@ -46,23 +46,11 @@ public class DriveTowardTargetCommand extends Command {
     // Current detection state of the detected game piece.
     private final DetectionState currentState = new DetectionState();
 
-    // Limelight NetworkTable used to fetch pose/target state values for control.
-    private final NetworkTable limelight = NetworkTableInstance.getDefault().getTable(ObjectRecognitionConstants.LIMELIGHT_NAME);
-
-    // Reference to the HopperSubsystem to check hopper extension state for distance calculations.
-    //private final HopperSubsystem m_hopper;
+    // Instance of the VisionSubsystem to access Limelight data and control pipelines.
+    private final VisionSubsystem visionSubsystem;
 
     // Instance of the SwerveSubsystem to control the robot's movement.
     private final SwerveSubsystem drivebase;
-
-    // Maximum forward speed limit (m/s).
-    private final double maxSpeed;
-
-    // Maximum rotation speed limit (rad/s).
-    private final double maxRotation;
-
-    // If true, run AprilTag mode; if false, run neural object detection mode.
-    private boolean detectAprilTag = true;
 
     // Desired stopping distance from bumper to target in meters.
     private double STOP_DISTANCE = 0.5;
@@ -74,44 +62,16 @@ public class DriveTowardTargetCommand extends Command {
     // Variable to store the latest tx value from the Limelight.
     private double tx;
 
-    /**
-     * Constructor for DriveTowardTargetCommand with explicit speed limits.
-     * This constructor does not set detection mode, so the command uses the field default
-     * (`detectAprilTag == true`) unless it is changed elsewhere.
+    /*
+     * Constructor for the DriveTowardTargetCommand. Based on the parameters of the VisionSubsystem,
+     * this command will either run in AprilTag detection mode or neural network object detection mode.
      * 
-     * @param drivebase   The swerve drive subsystem used to move the robot.
-     * @param maxSpeed    The maximum forward speed in meters per second. Set to 0 for align-only.
-     * @param maxRotation The maximum rotation speed in radians per second.
+     * @param drivebase the SwerveSubsystem instance used to control the robot's movement.
+     * @param visionSubsystem the VisionSubsystem instance used to access Limelight data and control pipelines.
      */
-    public DriveTowardTargetCommand(SwerveSubsystem drivebase, double maxSpeed, double maxRotation) {
+    public DriveTowardTargetCommand(SwerveSubsystem drivebase, VisionSubsystem visionSubsystem) {
         this.drivebase = drivebase;
-        this.maxSpeed = maxSpeed;
-        this.maxRotation = maxRotation;
-        //this.m_hopper = m_hopper;
-
-        // Require the drivebase so no other drive commands run at the same time.
-        addRequirements(drivebase);
-    }
-
-    /**
-     * Constructor for DriveTowardTargetCommand that allows specifying whether to detect AprilTags or
-     * use object detection. It uses default max speeds (2.0 m/s for forward, 2.0 rad/s for rotation).
-     * 
-     * @param drivebase      The swerve drive subsystem.
-     * @param detectAprilTag If true, uses AprilTag detection; if false, uses object detection.
-     */
-    public DriveTowardTargetCommand(SwerveSubsystem drivebase, boolean detectAprilTag) {
-        this.drivebase = drivebase;
-        this.maxSpeed = 2.0;
-        this.maxRotation = 2.0;
-        this.detectAprilTag = detectAprilTag;
-        //this.m_hopper = m_hopper;
-
-        if (!detectAprilTag) {
-            // If using object detection, we want to use a closer stop distance since we want to be right on top of the game piece to pick it up.
-            // We can adjust this as needed based on testing.
-            STOP_DISTANCE = 0.1; // In meters
-        }
+        this.visionSubsystem = visionSubsystem;
 
         // Require the drivebase so no other drive commands run at the same time.
         addRequirements(drivebase);
@@ -122,10 +82,10 @@ public class DriveTowardTargetCommand extends Command {
         // Runs once when the command starts.
 
         // Select the appropriate Limelight pipeline for the active detection mode.
-        if (detectAprilTag) {
-            setPipelineToAprilTags();
+        if (visionSubsystem.getPipelineIndex() == ObjectRecognitionConstants.APRIL_TAG_PIPELINE_INDEX) {
+            visionSubsystem.setPipelineIndex(ObjectRecognitionConstants.APRIL_TAG_PIPELINE_INDEX);
         } else {
-            setPipelineToObjectDetection();
+            visionSubsystem.setPipelineIndex(ObjectRecognitionConstants.OBJECT_DETECTION_PIPELINE_INDEX);
         }
 
         // Reset detection state to avoid stale data from previous runs.
@@ -136,7 +96,7 @@ public class DriveTowardTargetCommand extends Command {
     public void execute() {
         // Runs repeatedly while the command is active (about every 20 ms).
 
-        if (detectAprilTag) {
+        if (visionSubsystem.getPipelineIndex() == ObjectRecognitionConstants.APRIL_TAG_PIPELINE_INDEX) {
             // AprilTag detection branch.
 
             // 1) Validate that a fiducial ID is currently detected.
