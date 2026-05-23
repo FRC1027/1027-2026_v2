@@ -128,58 +128,58 @@ public class DriveTowardTargetCommand extends Command {
         // --- SHARED DETECTION LOGIC ---
 
         // 2) Check the "tv" flag for target validity.
-        double tv = limelight.getEntry("tv").getDouble(0.0);
-        if (tv < 1.0) {
-            currentState.clear();
-            stopRobot();
-            return;
-        }
+        //double tv = limelight.getEntry("tv").getDouble(0.0);
+        //if (tv < 1.0) {
+            //currentState.clear();
+            //stopRobot();
+            //return;
+        //}
 
         // 3) Read target pose relative to the Limelight camera.
-        double[] pose = limelight.getEntry("targetpose_cameraspace").getDoubleArray(new double[0]);
-        if (pose == null || pose.length < 3) {
-            currentState.clear();
-            stopRobot();
-            return;
-        }
+        //double[] pose = limelight.getEntry("targetpose_cameraspace").getDoubleArray(new double[0]);
+        //if (pose == null || pose.length < 3) {
+            //currentState.clear();
+            //stopRobot();
+            //return;
+        //}
 
         // Horizontal offset (left/right) in meters as aiming offset.
-        tx = pose[0];
+        //tx = pose[0];
 
         // Print horizontal offset (tx) before additional offset is applied for debugging.
-        System.out.println("Alignment Offset: " + tx);
+        //System.out.println("Alignment Offset: " + tx);
         
         // Apply an additional offset to the recorded horizontal offset (tx) depending if its offset to the left or right.
-        if (tx > 0){
+        //if (tx > 0){
             // If horizontal offset (tx) is to the
-            tx = pose[0] + Units.inchesToMeters(3.25);
-        } else if (tx < 0){
+            //tx = pose[0] + Units.inchesToMeters(3.25);
+        //} else if (tx < 0){
             // If horizontal offset (tx) is to the
-            tx = pose[0] - Units.inchesToMeters(3.25);
-        }
+            //tx = pose[0] - Units.inchesToMeters(3.25);
+        //}
 
         // Calculate bumper-to-target distance from Limelight pose data.
-        currentState.distance = Utils.calculateDistanceToTarget(limelight);
+        //currentState.distance = Utils.calculateDistanceToTarget(limelight);
         currentState.hasTarget = true;
 
         // --- CONTROL LOGIC ---
 
         // A) Forward speed control.
         // Only drive forward when maxSpeed > 0 and target distance is above stop threshold.
-        if (maxSpeed > 0 && currentState.distance > STOP_DISTANCE) {
+        //if (maxSpeed > 0 && currentState.distance > STOP_DISTANCE) {
             // Proportional approach speed that tapers as we get closer.
             double speedFactor = Math.min(1.0, currentState.distance / 4.0);
-            forwardSpeed = maxSpeed * speedFactor;
-        } else {
+            //forwardSpeed = maxSpeed * speedFactor;
+        //} else {
             forwardSpeed = 0.0;
-        }
+        //}
 
         // B) Rotation control to reduce horizontal offset (tx).
         double kP_turn = 4.0; // Proportional gain for turning (Increase for faster rotation).
         rotationSpeed = -kP_turn * tx; // Positive tx means target is right, so rotate right (negative Z).
 
         // Clamp rotation speed to our maximum allowed limit.
-        rotationSpeed = Math.max(-maxRotation, Math.min(maxRotation, rotationSpeed));
+        //rotationSpeed = Math.max(-maxRotation, Math.min(maxRotation, rotationSpeed));
 
         // Apply the calculated speeds to the robot. Translation2d(x, y) -> x is forward, y is left.
         drivebase.drive(new Translation2d(forwardSpeed, 0), rotationSpeed, true);
@@ -193,25 +193,25 @@ public class DriveTowardTargetCommand extends Command {
         System.out.println("[DriveTowardTarget] Ended");
     }
 
-    @Override
-    public boolean isFinished() {
-        // Rotation tolerance for considering the robot aligned, measured in radians.
-        final double ROTATION_TOLERANCE = 0.1;
+    // @Override
+    // public boolean isFinished() {
+    //     // Rotation tolerance for considering the robot aligned, measured in radians.
+    //     final double ROTATION_TOLERANCE = 0.1;
 
-        // 1) If we do not currently have a target, stop and let the driver re-trigger.
-        if (!currentState.hasTarget) {
-            return true;
-        }
+    //     // 1) If we do not currently have a target, stop and let the driver re-trigger.
+    //     if (!currentState.hasTarget) {
+    //         return true;
+    //     }
 
-        // 2) In drive mode (maxSpeed > 0), finish once we reach the stop distance.
-        boolean reachedDistanceTarget = (maxSpeed > 0) && (currentState.distance <= STOP_DISTANCE);
+    //     // 2) In drive mode (maxSpeed > 0), finish once we reach the stop distance.
+    //     //boolean reachedDistanceTarget = (maxSpeed > 0) && (currentState.distance <= STOP_DISTANCE);
 
-        // 3) Finish if aligned within rotation tolerance (align-only mode or while driving).
-        boolean alignedTarget = Math.abs(tx) <= ROTATION_TOLERANCE;
+    //     // 3) Finish if aligned within rotation tolerance (align-only mode or while driving).
+    //     boolean alignedTarget = Math.abs(tx) <= ROTATION_TOLERANCE;
 
-        // Command finishes if either we’ve reached distance OR we are aligned.
-        return reachedDistanceTarget || alignedTarget;
-    }
+    //     // Command finishes if either we’ve reached distance OR we are aligned.
+    //     return reachedDistanceTarget || alignedTarget;
+    // }
 
     /**
      * Helper method to stop the robot completely.

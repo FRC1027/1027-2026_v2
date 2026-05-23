@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -70,7 +71,7 @@ public final class Utils {
       double mountAngle = ObjectRecognitionConstants.LIMELIGHT_MOUNT_ANGLE_RADIANS;
       double tzPlanar = tz * Math.cos(mountAngle) + ty * Math.sin(mountAngle);
 
-      System.out.println("tz: " + tz + " ty: " + ty + " tzPlanar: " + tzPlanar);
+      System.out.println("tz: " + Units.metersToInches(tz) + " ty: " + ty + " tzPlanar: " + Units.metersToInches(tzPlanar));
 
       // Compute horizontal planar distance from camera to tag using X/Z components.
       double cameraToTag = Math.sqrt(tx * tx + tzPlanar * tzPlanar);

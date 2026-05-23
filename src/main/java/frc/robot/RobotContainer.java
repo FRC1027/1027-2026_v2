@@ -143,7 +143,7 @@ public class RobotContainer {
      * referenced by name in the PathPlanner interface when creating autonomous routines.
      */
     NamedCommands.registerCommand("Shoot", m_shooter.shoot()); // Adds the shoot command as a named command for use in PathPlanner paths
-    NamedCommands.registerCommand("ShootAlign", m_shooter.shootAlign(drivebase)); // Adds the shootAlign command as a named command for use in PathPlanner paths
+    //NamedCommands.registerCommand("ShootAlign", m_shooter.shootAlign(drivebase)); // Adds the shootAlign command as a named command for use in PathPlanner paths
     NamedCommands.registerCommand("Intake", m_intake.continuousIntakeCommand()); // Adds the intake command as a named command, for use in PathPlanner paths
     NamedCommands.registerCommand("HopperExpand/Retract", m_hopper.hopperEnlarger2000Command()); // Adds the hopperEnlarger2000Command as a named command for use in PathPlanner paths
     NamedCommands.registerCommand("ShootClose", m_shooter.fullSpeed());
@@ -202,7 +202,7 @@ public class RobotContainer {
     mechXbox.a().toggleOnTrue(m_shooter.shoot());
 
     // TEST BINDING: Controls the shooter to run at full speed with the `y` button (TOGGLEABLE).
-    mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
+    //mechXbox.y().toggleOnTrue(m_shooter.fullSpeed());
 
     //mechXbox.y().whileTrue(m_shooter.testDistanceManual());
 

@@ -151,6 +151,9 @@ public final class Constants {
 
     /** The angle the Limelight is mounted at relative to the horizon, in radians (Positive = Pitched Up). */
     public static final double LIMELIGHT_MOUNT_ANGLE_RADIANS = Math.toRadians(13.5);
+
+    /** The distance from the camera to the bumper, in meters. */
+    public static final double CAMERA_TO_BUMPER_DISTANCE = Units.inchesToMeters(0.0); // MEASURE THIS
   }
 
   /* ================= Drivebase ================= */

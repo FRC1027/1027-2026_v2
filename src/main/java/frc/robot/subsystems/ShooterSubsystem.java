@@ -105,8 +105,9 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.run(() -> {
             // Updates the Limelight variables to be used in calculations
             visionSubsystem.periodic();
-            double distance = visionSubsystem.getDistToCamera();
-            System.out.println("Calculated Distance to Target: " + distance + " meters (AUTOMATIC)");
+            double distToCamera = visionSubsystem.getDistToCamera();
+            double horizontalDistToCamera = visionSubsystem.getHorizontalDistToCamera();
+            System.out.println("Dist to Camera: " + distToCamera + " Horizontal Dist to Camera: " + horizontalDistToCamera);
         });
     }
 
@@ -188,21 +189,21 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param drivebase swerve subsystem used to drive toward the tag
      * @return command that aligns to the tag and then shoots, or no-op if tag is invalid
      */
-    public Command shootAlign(SwerveSubsystem drivebase) {
-        return Commands.defer(() -> {
-            double fid = LimelightHelpers.getFiducialID(ObjectRecognitionConstants.LIMELIGHT_NAME);
+    // public Command shootAlign(SwerveSubsystem drivebase) {
+    //     return Commands.defer(() -> {
+    //         double fid = LimelightHelpers.getFiducialID(ObjectRecognitionConstants.LIMELIGHT_NAME);
 
-            if (fid == 4 || fid == 10 || fid == 26) {
-                return new DriveTowardTargetCommand(drivebase, 0.0, 2.0) // Aligns to the target tag using only rotational movement (max speed = 0)
-                        // Once the alignment command finishes, run the shoot command while also locking the wheels to prevent movement during shooting.
-                        .andThen(Commands.deadline(
-                                shoot(), // End the command when the shoot command finishes (which is when the driver releases the trigger)
-                                new LockWheelsCommand(drivebase).repeatedly()));
-            }
-            // If no valid tag is seen, return a "do-nothing" command to avoid unintended motion.
-            return Commands.none();
-        }, Set.of(this, drivebase));
-    }
+    //         if (fid == 4 || fid == 10 || fid == 26) {
+    //             return new DriveTowardTargetCommand(drivebase, 0.0, 2.0) // Aligns to the target tag using only rotational movement (max speed = 0)
+    //                     // Once the alignment command finishes, run the shoot command while also locking the wheels to prevent movement during shooting.
+    //                     .andThen(Commands.deadline(
+    //                             shoot(), // End the command when the shoot command finishes (which is when the driver releases the trigger)
+    //                             new LockWheelsCommand(drivebase).repeatedly()));
+    //         }
+    //         // If no valid tag is seen, return a "do-nothing" command to avoid unintended motion.
+    //         return Commands.none();
+    //     }, Set.of(this, drivebase));
+    // }
 
     /**
      * Runs the shooter at varying speeds (dependant on calculated distance) for a certain period of time, then stops.
