@@ -105,8 +105,8 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.run(() -> {
             // Updates the Limelight variables to be used in calculations
             visionSubsystem.periodic();
-            double distToCamera = visionSubsystem.getDistToCamera();
-            double horizontalDistToCamera = visionSubsystem.getHorizontalDistToCamera();
+            double distToCamera = visionSubsystem.getFiducialDistToCamera();
+            double horizontalDistToCamera = visionSubsystem.getFiducialHorizontalDistToCamera();
             System.out.println("Dist to Camera: " + distToCamera + " Horizontal Dist to Camera: " + horizontalDistToCamera);
         });
     }
@@ -119,7 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double calculateTheoreticalRPS() {
         // Calculates the distance from the shooter to the AprilTag.
-        double shooterToTag = visionSubsystem.getHorizontalDistToCamera() - ShooterConstants.SHOOTER_TO_LIMELIGHT_OFFSET;
+        double shooterToTag = visionSubsystem.getFiducialHorizontalDistToCamera() - ShooterConstants.SHOOTER_TO_LIMELIGHT_OFFSET;
 
         // Return NaN if the distance data is missing or invalid.
         if (!Double.isFinite(shooterToTag)) {
@@ -260,7 +260,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double getDistance() {
         // Calculate the distance from the shooter to the target tag using Limelight data.
-        double shooterToTag = visionSubsystem.getHorizontalDistToCamera() - ShooterConstants.SHOOTER_TO_LIMELIGHT_OFFSET;
+        double shooterToTag = visionSubsystem.getFiducialHorizontalDistToCamera() - ShooterConstants.SHOOTER_TO_LIMELIGHT_OFFSET;
         return shooterToTag;
     }
 

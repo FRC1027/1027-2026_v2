@@ -100,7 +100,7 @@ public class DriveTowardTargetCommand extends Command {
             // AprilTag detection branch.
 
             // 1) Validate that a fiducial ID is currently detected.
-            double fid = LimelightHelpers.getFiducialID(ObjectRecognitionConstants.LIMELIGHT_NAME);
+            double fid = visionSubsystem.getFiducialID();
             if (Double.isNaN(fid) || fid < 0.0) {
                 currentState.clear();
                 stopRobot();
@@ -118,11 +118,6 @@ public class DriveTowardTargetCommand extends Command {
                 stopRobot();
                 return;
             }
-
-            // Store the first detection (typically highest confidence).
-            //LimelightTarget_Detector detection = results.targets_Detector[0];
-            //currentState.className = detection.className;
-            //currentState.confidence = detection.confidence;
         }
 
         // --- SHARED DETECTION LOGIC ---
