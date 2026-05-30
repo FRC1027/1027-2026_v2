@@ -48,7 +48,7 @@ public class VisionSubsystem extends SubsystemBase{
 
         // Force the LEDs off initially. Commands can turn them on as needed.
         LimelightHelpers.setLEDMode_ForceOff(limelightName);
-
+        
         // Set the initial pipeline index for the Limelight as appropriate.
         if (pipelineIndex == 0) {
             LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex); // Set to AprilTag pipeline
@@ -173,6 +173,11 @@ public class VisionSubsystem extends SubsystemBase{
         }
     }
 
+    /* Getter method for the Limelight network table. */
+    public NetworkTable getLimelight() {
+        return limelight;
+    }
+
     /* Getter methods for AprilTag/Fiducial data. */
     public int getPipelineIndex() {
         return pipelineIndex;
@@ -210,6 +215,7 @@ public class VisionSubsystem extends SubsystemBase{
         return fiducialHorizontalDistToCamera;
     }
 
+    // hasTarget() can be used for both AprilTag/Fiducial detection and neural network detection.
     public boolean hasTarget() {
         return hasTarget;
     }

@@ -121,7 +121,7 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // Initialize the VisionSubsystem
-    m_vision = new VisionSubsystem(ObjectRecognitionConstants.LIMELIGHT_NAME, 0, new int[]{5, 10});
+    m_vision = new VisionSubsystem(ObjectRecognitionConstants.LIMELIGHT_NAME, 0, new int[]{5, 8, 10});
 
     // Initialize the HopperSubsystem
     m_hopper = new HopperSubsystem();
@@ -186,7 +186,7 @@ public class RobotContainer {
     /* ================= Mechanism Control Bindings ================= */
 
     // Controls the enlargment/retraction of the hopper with the `y` button (TOGGLEABLE).
-    //mechXbox.a().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
+    mechXbox.x().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
 
     // Controls the intake to run continuously via the `x` button (TOGGLEABLE).
     mechXbox.b().toggleOnTrue(m_intake.continuousIntakeCommand());
@@ -206,35 +206,50 @@ public class RobotContainer {
 
     //mechXbox.y().whileTrue(m_shooter.testDistanceManual());
 
-    mechXbox.x().whileTrue(m_shooter.testDistanceAutomatic());
+    //mechXbox.x().whileTrue(m_shooter.testDistanceAutomatic());
 
     /* ================= Driver Control Bindings ================= */
 
+    // Temp command for step up day demo, will be removed after the demo
+    driverXbox.y().toggleOnTrue(m_shooter.stepUpDayDemo());
+
+    // Controls the enlargment/retraction of the hopper with the `x` button (TOGGLEABLE).
+    //mechXbox.x().toggleOnTrue(m_hopper.hopperEnlarger2000Command());
+
+    // Controls the intake to run continuously via the `b` button (TOGGLEABLE).
+    driverXbox.b().toggleOnTrue(m_intake.continuousIntakeCommand());
+
+    //Manually control the hopper up and down with the bumpers while held, for testing purposes.
+    driverXbox.rightBumper().whileTrue(m_hopper.moveHopperUp());
+    driverXbox.leftBumper().whileTrue(m_hopper.moveHopperDown());
+
     // Controls the robot to lock its wheels with the `x` button (WHILE HELD).
-    driverXbox.x().whileTrue(new LockWheelsCommand(drivebase).repeatedly());
+    //driverXbox.x().whileTrue(new LockWheelsCommand(drivebase).repeatedly());
 
     // Alternative wheel lock binding
     //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
 
+
     //driverXbox.a().toggleOnTrue(driveRobotOrientedCommand);
     //driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyroWithAlliance, drivebase));
 
+
     // TEST BINDING: Run the NEW Odometry-based distance calculation for shooting with the Right/Left Trigger
     // STATIC TEST: Right Trigger (Passes false moving)
-    mechXbox.rightTrigger(0.5).whileTrue(m_shooter.shootOdometry(false));
+    //mechXbox.rightTrigger(0.5).whileTrue(m_shooter.shootOdometry(false));
     // MOVING TEST: Left Trigger (Passes true moving)
-    mechXbox.leftTrigger(0.5).whileTrue(m_shooter.shootOdometry(true));
+    //mechXbox.leftTrigger(0.5).whileTrue(m_shooter.shootOdometry(true));
 
     // TEST BINDING: Auto-Aim at the Hub while holding the Right/Left Trigger
     // STATIC TEST: Right Bumper (Passes false moving)
-    driverXbox.rightTrigger(0.5).whileTrue(
-        new AimAtHubCommand(drivebase, () -> -driverXbox.getLeftY(), () -> -driverXbox.getLeftX(), false)
-    );
+    //driverXbox.rightTrigger(0.5).whileTrue(
+    //    new AimAtHubCommand(drivebase, () -> -driverXbox.getLeftY(), () -> -driverXbox.getLeftX(), false)
+    //);
 
     // MOVING TEST: Left Trigger (Passes true moving)
-    driverXbox.leftTrigger(0.5).whileTrue(
-        new AimAtHubCommand(drivebase, () -> -driverXbox.getLeftY(), () -> -driverXbox.getLeftX(), true)
-    );
+    //driverXbox.leftTrigger(0.5).whileTrue(
+    //    new AimAtHubCommand(drivebase, () -> -driverXbox.getLeftY(), () -> -driverXbox.getLeftX(), true)
+    //);
 
     // Set the default command for the drivebase to the field-oriented control with angular velocity input.
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);

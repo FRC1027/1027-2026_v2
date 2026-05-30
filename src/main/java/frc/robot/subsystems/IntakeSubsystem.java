@@ -61,7 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return runEnd(
             () -> setIntakeSpeed(-0.9), // Run intake at a set speed.
             () -> setIntakeSpeed(0.0) // Stop intake when command is interupted.
-        ).onlyWhile(isHopperEnlarged); // If the hopper begins to close while the intake is running, the intake command stops.
+        );//.onlyWhile(isHopperEnlarged); // If the hopper begins to close while the intake is running, the intake command stops.
     }
 
     /**
@@ -83,10 +83,10 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param speed The speed to set the motor to (between -1.0 and 1.0).
      */
     public void setIntakeSpeed(double speed) {
-        if (isHopperEnlarged.getAsBoolean()){
+        //if (isHopperEnlarged.getAsBoolean()){
             intakeMotor.set(speed);
-        } else {
-            intakeMotor.set(0.0);
-        }
+        //} else {
+            //intakeMotor.set(0.0);
+        //}
     }
 }

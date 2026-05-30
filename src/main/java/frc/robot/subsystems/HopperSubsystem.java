@@ -96,7 +96,7 @@ public class HopperSubsystem extends SubsystemBase {
                         .until(() -> hopperEncoder.getPosition() >= initialPosition + targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
-                            //holdPosition(initialPosition + targetRotations);
+                            holdPosition(initialPosition + targetRotations);
                             hopperEnlarged = true;
                             System.out.println("Hopper is Extended: " + hopperEnlarged);
                         });
@@ -108,7 +108,7 @@ public class HopperSubsystem extends SubsystemBase {
                         .until(() -> hopperEncoder.getPosition() <= initialPosition - targetRotations)
                         .finallyDo(() -> {
                             setHopperSpeed(0.0);
-                            //holdPosition(initialPosition - targetRotations);
+                            holdPosition(initialPosition - targetRotations);
                             hopperEnlarged = false;
                             System.out.println("Hopper is Extended: " + hopperEnlarged);
                         });

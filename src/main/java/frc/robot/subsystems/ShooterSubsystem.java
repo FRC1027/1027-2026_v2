@@ -243,12 +243,31 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /**
+     * TEST METHOD:
+     * A method used for shooter testing to run the indexer and shooter at a set speed without Limelight distance calculation.
+     * 
+     * @return a command that runs the shooter at a set speed in parallel with the intake.
+     */
+    public Command stepUpDayDemo(){
+        return Commands.deadline(
+            runEnd(
+                () -> setShooterSpeed(0.48), 
+                () -> {
+                    shooterMotor1.setControl(new NeutralOut());
+                    shooterMotor2.setControl(followerRequest);
+                }
+            ),
+            m_indexer.runIndexerCommand());
+    }
+
+    /**
      * Sets the shooter motor speed for manual control. Positive speed shoots out,
      * negative speed intakes in, and zero stops the motor.
      *
      * @param speed motor output in the [-1, 1] range (sign controls direction)
      */
     public void setShooterSpeed(double speed) {
+        System.out.println("power applied");
         shooterMotor1.set(speed);
         shooterMotor2.setControl(followerRequest);
     }
